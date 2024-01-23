@@ -28,7 +28,18 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvTitle"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toStartOf="@+id/ic_trash"/>
+
+        <ImageView
+            android:id="@+id/ic_trash"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_trash"
+            app:layout_constraintTop_toTopOf="@+id/cbDone"
+            app:layout_constraintBottom_toBottomOf="@+id/cbDone"
+            app:layout_constraintStart_toEndOf="@+id/cbDone"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="8dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

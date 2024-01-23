@@ -34,6 +34,9 @@ class TodoAdapter(
             holder.binding.tvTitle.text = todos[position].title
             holder.binding.cbDone.isChecked = todos[position].done
             holder.binding.tvId.text = todos[position].id.toString()
+            holder.binding.icTrash.setOnClickListener {
+                todos[position].onRemove()
+            }
         }
     }
 
