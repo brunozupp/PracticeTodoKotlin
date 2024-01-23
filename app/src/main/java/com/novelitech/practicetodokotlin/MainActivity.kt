@@ -2,6 +2,7 @@ package com.novelitech.practicetodokotlin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.novelitech.practicetodokotlin.adapters.TodoAdapter
 import com.novelitech.practicetodokotlin.databinding.ActivityMainBinding
@@ -52,10 +53,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun removeItem(id: UUID) : Unit {
 
-        val index = todoList.indexOfFirst { item -> item.id == id }
+        val dialogRemoveItem = AlertDialog.Builder(this)
+            .setTitle("Are you sure that you want to delete this?")
+            .setMessage("This action is irreversible!")
+            .setPositiveButton("Yes") {_, _ ->
+                val index = todoList.indexOfFirst { item -> item.id == id }
 
-        todoList.removeAt(index)
+                todoList.removeAt(index)
 
-        adapter.notifyItemRemoved(index)
+                adapter.notifyItemRemoved(index)
+            }
+            .setNegativeButton("No") {_, _ -> true}
+            .create()
+
+        dialogRemoveItem.show()
+
     }
 }
