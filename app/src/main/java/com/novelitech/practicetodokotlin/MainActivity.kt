@@ -48,11 +48,10 @@ class MainActivity : AppCompatActivity() {
         val isDone = false
         val id = UUID.randomUUID()
 
-        val todo = Todo(
+        val todo = buildTodo(
             title = title,
-            done = isDone,
+            isDone = isDone,
             id = id,
-            onRemove = { removeItem(id) }
         )
 
         todoList.add(todo)
@@ -60,6 +59,16 @@ class MainActivity : AppCompatActivity() {
         adapter.notifyItemInserted(todoList.size - 1)
 
         binding.etTitle.text.clear()
+    }
+
+    private fun buildTodo(id: UUID, isDone: Boolean, title: String) : Todo {
+        return Todo(
+            title = title,
+            done = isDone,
+            id = id,
+            onRemove = { removeItem(id) },
+            onCheck = {checked -> onCheck(id, checked)}
+        )
     }
 
     private fun removeItem(id: UUID) {
@@ -86,11 +95,32 @@ class MainActivity : AppCompatActivity() {
         val items = repository.getAll()
 
         if(items.isNotEmpty()) {
-            todoList.addAll(items)
+
+            todoList.addAll(items.map { item ->
+                buildTodo(id = item.id, isDone = item.done, title = item.title)
+            })
 
             // In this case where I will set ALL the items in the list at once, it's OK to use
             // this function.
-            adapter.notifyDataSetChanged()
+
+            adapter.notifyItemRangeInserted(0, todoList.size)
+
+            //adapter.notifyDataSetChanged()
         }
+    }
+
+    private fun onCheck(id: UUID, checked: Boolean) {
+
+        val index = todoList.indexOfFirst { item -> item.id == id }
+
+        todoList[index] = todoList[index].copy(
+            done = checked
+        )
+
+        Log.d("CHECKED", "checked: $checked")
+
+        adapter.notifyItemChanged(index)
+
+        repository.save(todoList)
     }
 }

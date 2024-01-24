@@ -13,20 +13,22 @@ class TodoRepository(private val activity: AppCompatActivity) : ITodoRepository 
 
     override fun save(items: List<Todo>) {
 
-        val sharedPreference = activity.getSharedPreferences("TODO_APP_PRACTICE", Context.MODE_PRIVATE)
+        Thread {
+            val sharedPreference = activity.getSharedPreferences("TODO_APP_PRACTICE", Context.MODE_PRIVATE)
 
-        val editor = sharedPreference.edit()
+            val editor = sharedPreference.edit()
 
-        val gson = Gson()
+            val gson = Gson()
 
-        val listJson = gson.toJson(items)
+            val listJson = gson.toJson(items)
 
-        editor.apply {
-            putString(KEY_TODOS, listJson)
-            apply()
-        }
+            editor.apply {
+                putString(KEY_TODOS, listJson)
+                apply()
+            }
 
-        Log.d("TODO", listJson)
+            Log.d("TODO", listJson)
+        }.start()
     }
 
     override fun getAll(): List<Todo> {

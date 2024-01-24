@@ -1,5 +1,6 @@
 package com.novelitech.practicetodokotlin.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +37,16 @@ class TodoAdapter(
             holder.binding.tvId.text = todos[position].id.toString()
             holder.binding.icTrash.setOnClickListener {
                 todos[position].onRemove()
+            }
+            /**
+             * I recommend that not to use checkBox.setOnCheckedChangeListener in
+             * RecyclerView.Adapter. Because on scrolling RecyclerView,
+             * checkBox.setOnCheckedChangeListener will be fired by adapter. It's not safe. Instead,
+             * use checkBox.setOnClickListener to interact with user inputs.
+             */
+            holder.binding.cbDone.setOnClickListener {
+                val isChecked = holder.binding.cbDone.isChecked
+                todos[position].onCheck(isChecked)
             }
         }
     }
