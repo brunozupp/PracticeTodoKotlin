@@ -6,5 +6,7 @@ data class Todo (
     val id: UUID,
     val title: String,
     val done: Boolean,
+
+    @Transient
     val onRemove: () -> Unit
 )
