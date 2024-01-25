@@ -20,14 +20,16 @@ class MainActivity : AppCompatActivity() {
 
     private var todoList = mutableListOf<Todo>()
 
-    private val adapter = TodoAdapter(todoList)
+    private val adapter = TodoAdapter(
+        todoList
+    ) { position -> removeItem(position) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        repository = TodoRepository(this)
+        repository = TodoRepository(this, binding)
 
         setContentView(binding.root)
 
@@ -66,22 +68,24 @@ class MainActivity : AppCompatActivity() {
             title = title,
             done = isDone,
             id = id,
-            onRemove = { removeItem(id) },
+            onRemove = { position -> removeItem(position) },
             onCheck = {checked -> onCheck(id, checked)}
         )
     }
 
-    private fun removeItem(id: UUID) {
+    private fun removeItem(position: Int) {
 
         val dialogRemoveItem = AlertDialog.Builder(this)
             .setTitle("Are you sure that you want to delete this?")
-            .setMessage("This action is irreversible!")
+            .setMessage("This action is irreversible! ${todoList[position].title}")
             .setPositiveButton("Yes") {_, _ ->
-                val index = todoList.indexOfFirst { item -> item.id == id }
 
-                todoList.removeAt(index)
+                todoList.removeAt(position)
 
-                adapter.notifyItemRemoved(index)
+                adapter.notifyItemRemoved(position)
+                adapter.notifyItemRangeChanged(position,todoList.size);
+
+                repository.save(todoList)
             }
             .setNegativeButton("No") {_, _ -> true}
             .create()
@@ -100,9 +104,6 @@ class MainActivity : AppCompatActivity() {
                 buildTodo(id = item.id, isDone = item.done, title = item.title)
             })
 
-            // In this case where I will set ALL the items in the list at once, it's OK to use
-            // this function.
-
             adapter.notifyItemRangeInserted(0, todoList.size)
 
             //adapter.notifyDataSetChanged()
@@ -116,8 +117,6 @@ class MainActivity : AppCompatActivity() {
         todoList[index] = todoList[index].copy(
             done = checked
         )
-
-        Log.d("CHECKED", "checked: $checked")
 
         adapter.notifyItemChanged(index)
 

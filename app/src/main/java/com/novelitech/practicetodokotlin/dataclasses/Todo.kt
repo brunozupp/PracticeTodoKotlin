@@ -8,7 +8,7 @@ data class Todo (
     val done: Boolean,
 
     @Transient
-    val onRemove: () -> Unit,
+    val onRemove: (Int) -> Unit,
 
     @Transient
     val onCheck: (Boolean) -> Unit

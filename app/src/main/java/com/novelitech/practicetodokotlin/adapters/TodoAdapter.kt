@@ -11,7 +11,8 @@ import com.novelitech.practicetodokotlin.dataclasses.Todo
  * Adapter class can be understood being a class where I do the link between .xml and the data
  */
 class TodoAdapter(
-    var todos: List<Todo>
+    var todos: MutableList<Todo>,
+    val onRemove: (Int) -> Unit,
 ) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
 
     /**
@@ -36,7 +37,9 @@ class TodoAdapter(
             holder.binding.cbDone.isChecked = todos[position].done
             holder.binding.tvId.text = todos[position].id.toString()
             holder.binding.icTrash.setOnClickListener {
-                todos[position].onRemove()
+
+                onRemove(position)
+                //todos[position].onRemove(position)
             }
             /**
              * I recommend that not to use checkBox.setOnCheckedChangeListener in
